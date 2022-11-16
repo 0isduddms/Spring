@@ -92,9 +92,42 @@
 	</div>
 	
 	<script type="text/javascript">
+		let showList = function(bno) {
+			$.ajax({
+				type: 'GET', 			// 요청 메서드
+				url: '/heart/comments?bno='+bno,		// 요청 URI
+				success: function(result) {				// 서버로부터 응답이 도착하면 호출될 함수
+				$("#commentList").html(toHtml(result))		// result는 서버가 전송한 데이터
+			},
+			error : function() { alert("error") }	// 에러가 발생할 때, 호출될 함수
+			})
+		}
+		
 		$(document).ready(function() {			/* main() */
 			$("#listBtn").on("click", function() {
 				location.href ="<c:url value='/board/list${searchItem.queryString}' />";
+			})
+			
+			
+			
+			let toHtml = function(comments) {
+				let tmp = "<ul>"
+			
+				comments.forEach(function(comment) {
+					tmp += '<li data-cno =' + comment.cno
+					tmp += ' data-bno=' + comment.bno
+					tmp += ' data-pcno=' + comment.pcno + '>'
+					tmp += ' commenter=<span class="commenter" >' + comment.commenter + '</span>'
+					tmp += ' comment=<span class="comment" >' + comment.comment + '</span>'
+					tmp += '</li>'
+					
+				})
+			
+				return tmp += "</ul>"
+			}
+			
+			$("#sendBtn").click(function() {
+				showList(bno)
 			})
 			
 			$("#removeBtn").on("click", function() {
